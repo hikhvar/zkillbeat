@@ -5,8 +5,12 @@
 zkillbeat:
   # Defines how often an event is sent to the output
   period: 1s
+  # Defines were to fetch the informations
   zkillboard_feed: "https://redisq.zkillboard.com/listen.php"
+  # The ID used to identify at the redisQueue. Ensures you don't miss any kills if you have to restart the beater
   zkillboard_queue_id: "please_change"
+  # BoltDB file. Used to cache the SystemInformations returned by CREST.
+  system_cache_file: "/tmp/system_cache.db"
 
 #================================ General ======================================
 

@@ -12,6 +12,8 @@ import (
 	"github.com/hikhvar/zkillbeat/config"
 )
 
+const killTimeFormat string = "2006.01.02 15:04:05"
+
 type Zkillbeat struct {
 	done   chan struct{}
 	config config.Config
@@ -26,7 +28,7 @@ func New(b *beat.Beat, cfg *common.Config) (beat.Beater, error) {
 	}
 
 	bt := &Zkillbeat{
-		done: make(chan struct{}),
+		done:   make(chan struct{}),
 		config: config,
 	}
 	return bt, nil
@@ -44,11 +46,16 @@ func (bt *Zkillbeat) Run(b *beat.Beat) error {
 		case <-bt.done:
 			return nil
 		case kill := <-kills:
+			killTime, err := time.ParseInLocation(killTimeFormat, kill.Payload.Kill.KillTime, time.UTC)
+			if err != nil {
+				logp.Err("Could not parse Time &v", err)
+			}
 			event := common.MapStr{
-				"@timestamp": common.Time(time.Now()),
-				"type":       b.Name,
-				"killid":  kill.Payload.KillID,
-				"killmail": kill.Payload.Kill,
+				"@timestamp":    common.Time(killTime),
+				"fetched":       common.Time(time.Now()),
+				"type":          b.Name,
+				"killid":        kill.Payload.KillID,
+				"killmail":      kill.Payload.Kill,
 				"zkillmetadata": kill.Payload.Metadata,
 			}
 			bt.client.PublishEvent(event)
