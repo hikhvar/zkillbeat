@@ -1,11 +1,15 @@
 # Zkillbeat
 
-Welcome to Zkillbeat.
+Welcome to Zkillbeat. This beat pulls the zkillboard redis queue and pushes the result into
+an elasticsearch cluster. To fetch some additional informations (which region a system belongs to), 
+the crest API is called. This results are cached into a local boltDB file.
 
-Ensure that this folder is at the following location:
-`${GOPATH}/github.com/hikhvar`
+
 
 ## Getting Started with Zkillbeat
+
+Ensure that this folder is at the following location:
+`${GOPATH}/src/github.com/hikhvar`
 
 ### Requirements
 
